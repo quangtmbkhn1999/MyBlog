@@ -40,11 +40,25 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       log_in @user
-      flash[:success] = "Welcome to the Sample App!"
+      flash[:success] = "Welcome to the Mini Blog"
       redirect_to @user
     else
       render 'new'
     end
+  end
+
+  def following
+    @title = "Following"
+    @user = User.find(params[:id])
+    @users = @user.following.paginate(page: params[:page])
+    render 'show_follow'
+  end
+  
+  def followers
+    @title = "Followers"
+    @user = User.find(params[:id])
+    @users = @user.followers.paginate(page: params[:page])
+    render 'show_follow'
   end
 
   private
@@ -73,19 +87,6 @@ class UsersController < ApplicationController
       redirect_to(root_url) unless current_user.admin?
     end
 
-    def following
-      @title = "Following"
-      @user = User.find(params[:id])
-      @users = @user.following.paginate(page: params[:page])
-      render 'show_follow'
-    end
-    
-    def followers
-      @title = "Followers"
-      @user = User.find(params[:id])
-      @users = @user.followers.paginate(page: params[:page])
-      render 'show_follow'
-    end
 
     private
 
